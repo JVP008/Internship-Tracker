@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | Internship Tracker</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/navbar :: navbar('dashboard')}"></header>
+
+<main class="container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">System Dashboard</h1>
+      <p class="page-subtitle">Real-time overview of college internship activities & statistics</p>
+    </div>
+  </div>
+
+  <!-- Metric Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Students</div>
+      <div class="stat-value" th:text="${totalStudents}">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Organizations</div>
+      <div class="stat-value" th:text="${totalOrganizations}">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Open Internships</div>
+      <div class="stat-value" th:text="${totalInternships}">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Applications Submitted</div>
+      <div class="stat-value" th:text="${totalApplications}">0</div>
+    </div>
+  </div>
+
+  <!-- Recent Applications Panel -->
+  <div class="card">
+    <div class="card-header">
+      <span>Latest Internship Applications</span>
+      <a href="/applications" class="btn btn-outline">View All Applications &rarr;</a>
+    </div>
+    <div class="card-body" style="padding: 0;">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Student</th>
+              <th>Internship</th>
+              <th>Applied Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="app : ${recentApplications}">
+              <td class="code-cell" th:text="'#' + ${app.id}">#1</td>
+              <td th:text="${app.student != null ? app.student.name : '-'}">Jayesh</td>
+              <td th:text="${app.internship != null ? app.internship.title : '-'}">SWE Intern</td>
+              <td class="code-cell" th:text="${app.appliedDate}">2026-10-24</td>
+              <td>
+                <span class="pill"
+                      th:classappend="'pill-' + ${#strings.toLowerCase(app.status)}"
+                      th:text="${app.status}">APPLIED</span>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(recentApplications)}">
+              <td colspan="5" class="empty-state">No applications submitted yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

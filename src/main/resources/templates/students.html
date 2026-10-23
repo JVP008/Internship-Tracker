@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Students | Internship Tracker</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/navbar :: navbar('students')}"></header>
+
+<main class="container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Students Registry</h1>
+      <p class="page-subtitle">Manage enrolled college students and their academic details</p>
+    </div>
+  </div>
+
+  <!-- Add Student Card -->
+  <div class="card">
+    <div class="card-header">Register New Student</div>
+    <div class="card-body">
+      <form th:action="@{/students}" th:object="${student}" method="POST">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" th:field="*{name}" placeholder="e.g. Jayesh Patel" required>
+          </div>
+          <div class="form-group">
+            <label for="email">College Email *</label>
+            <input type="email" id="email" th:field="*{email}" placeholder="jayesh@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="text" id="phone" th:field="*{phone}" placeholder="+91 9876543210">
+          </div>
+          <div class="form-group">
+            <label for="college">College Name</label>
+            <input type="text" id="college" th:field="*{college}" placeholder="e.g. MIT Institute of Technology">
+          </div>
+          <div class="form-group">
+            <label for="branch">Engineering Branch</label>
+            <input type="text" id="branch" th:field="*{branch}" placeholder="Computer Science">
+          </div>
+        </div>
+        <div style="margin-top: 10px;">
+          <button type="submit" class="btn btn-primary">+ Register Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Students List Card -->
+  <div class="card">
+    <div class="card-header">Registered Students (<span th:text="${#lists.size(students)}">0</span>)</div>
+    <div class="card-body" style="padding: 0;">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>College</th>
+              <th>Branch</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="s : ${students}">
+              <td class="code-cell" th:text="'#' + ${s.id}">#1</td>
+              <td style="font-weight: 600;" th:text="${s.name}">Jayesh</td>
+              <td class="code-cell" th:text="${s.email}">jayesh@example.com</td>
+              <td th:text="${s.phone != null ? s.phone : '-'}">+91 9876543210</td>
+              <td th:text="${s.college != null ? s.college : '-'}">MIT</td>
+              <td th:text="${s.branch != null ? s.branch : '-'}">CS</td>
+              <td>
+                <form th:action="@{'/students/' + ${s.id} + '/delete'}" method="POST" onsubmit="return confirm('Delete this student?');" style="display:inline;">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(students)}">
+              <td colspan="7" class="empty-state">No students registered yet. Fill the form above to add one.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

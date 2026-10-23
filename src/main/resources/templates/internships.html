@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Internships | Internship Tracker</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/navbar :: navbar('internships')}"></header>
+
+<main class="container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Internship Postings</h1>
+      <p class="page-subtitle">Available internship openings posted by verified organizations</p>
+    </div>
+  </div>
+
+  <!-- Post Internship Card -->
+  <div class="card">
+    <div class="card-header">Post New Internship Opening</div>
+    <div class="card-body">
+      <form th:action="@{/internships}" th:object="${internship}" method="POST">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="organizationId">Hiring Organization *</label>
+            <select name="organizationId" id="organizationId" required>
+              <option value="" disabled selected>-- Select Organization --</option>
+              <option th:each="org : ${organizations}" th:value="${org.id}" th:text="${org.name}">Google</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="title">Internship Role / Title *</label>
+            <input type="text" id="title" th:field="*{title}" placeholder="e.g. Backend Java Developer" required>
+          </div>
+          <div class="form-group">
+            <label for="location">Location / Remote</label>
+            <input type="text" id="location" th:field="*{location}" placeholder="e.g. Bangalore / Remote">
+          </div>
+          <div class="form-group">
+            <label for="stipend">Monthly Stipend (₹)</label>
+            <input type="number" id="stipend" th:field="*{stipend}" placeholder="45000" min="0" step="500">
+          </div>
+          <div class="form-group">
+            <label for="durationInWeeks">Duration (Weeks)</label>
+            <input type="number" id="durationInWeeks" th:field="*{durationInWeeks}" placeholder="12" min="1">
+          </div>
+          <div class="form-group full-width">
+            <label for="description">Job Description & Requirements</label>
+            <textarea id="description" th:field="*{description}" placeholder="Key responsibilities, required skills (Java, Spring Boot, SQL)..."></textarea>
+          </div>
+        </div>
+        <div style="margin-top: 10px;">
+          <button type="submit" class="btn btn-primary">+ Post Internship</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Internships List Card -->
+  <div class="card">
+    <div class="card-header">All Open Internships (<span th:text="${#lists.size(internships)}">0</span>)</div>
+    <div class="card-body" style="padding: 0;">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Role</th>
+              <th>Organization</th>
+              <th>Location</th>
+              <th>Stipend</th>
+              <th>Duration</th>
+              <th>Applications</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="i : ${internships}">
+              <td class="code-cell" th:text="'#' + ${i.id}">#1</td>
+              <td style="font-weight: 600;" th:text="${i.title}">SWE Intern</td>
+              <td th:text="${i.organization != null ? i.organization.name : '-'}">Google</td>
+              <td th:text="${i.location != null ? i.location : '-'}">Bangalore</td>
+              <td class="code-cell" th:text="${i.stipend != null ? '₹' + #numbers.formatDecimal(i.stipend, 0, 0) : 'Unpaid'}">₹50000</td>
+              <td class="code-cell" th:text="${i.durationInWeeks != null ? i.durationInWeeks + ' wks' : '-'}">12 wks</td>
+              <td class="code-cell" th:text="${#lists.size(i.applications)}">0</td>
+              <td>
+                <form th:action="@{'/internships/' + ${i.id} + '/delete'}" method="POST" onsubmit="return confirm('Delete this internship?');" style="display:inline;">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(internships)}">
+              <td colspan="8" class="empty-state">No internships posted yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

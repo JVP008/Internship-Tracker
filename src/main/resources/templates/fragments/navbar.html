@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header class="app-header" th:fragment="navbar(activeTab)">
+  <div class="brand-section">
+    <span class="brand-logo">FAST-TRACK</span>
+    <a href="/" class="brand-title">Internship Tracker</a>
+    <span class="brand-badge">v1.0.0</span>
+  </div>
+  <nav class="nav-links">
+    <a href="/" th:classappend="${activeTab == 'dashboard'} ? 'active' : ''">Dashboard</a>
+    <a href="/students" th:classappend="${activeTab == 'students'} ? 'active' : ''">Students</a>
+    <a href="/organizations" th:classappend="${activeTab == 'organizations'} ? 'active' : ''">Organizations</a>
+    <a href="/internships" th:classappend="${activeTab == 'internships'} ? 'active' : ''">Internships</a>
+    <a href="/applications" th:classappend="${activeTab == 'applications'} ? 'active' : ''">Applications</a>
+  </nav>
+</header>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Organizations | Internship Tracker</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/navbar :: navbar('organizations')}"></header>
+
+<main class="container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Hiring Organizations</h1>
+      <p class="page-subtitle">Partner companies offering internship roles</p>
+    </div>
+  </div>
+
+  <!-- Add Organization Card -->
+  <div class="card">
+    <div class="card-header">Register New Organization</div>
+    <div class="card-body">
+      <form th:action="@{/organizations}" th:object="${organization}" method="POST">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Company Name *</label>
+            <input type="text" id="name" th:field="*{name}" placeholder="e.g. Google India" required>
+          </div>
+          <div class="form-group">
+            <label for="industry">Industry</label>
+            <input type="text" id="industry" th:field="*{industry}" placeholder="e.g. Information Technology">
+          </div>
+          <div class="form-group">
+            <label for="website">Official Website</label>
+            <input type="url" id="website" th:field="*{website}" placeholder="https://careers.google.com">
+          </div>
+          <div class="form-group">
+            <label for="location">Headquarters / City</label>
+            <input type="text" id="location" th:field="*{location}" placeholder="Bangalore, Karnataka">
+          </div>
+        </div>
+        <div style="margin-top: 10px;">
+          <button type="submit" class="btn btn-primary">+ Add Organization</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Organizations List Card -->
+  <div class="card">
+    <div class="card-header">All Partner Organizations (<span th:text="${#lists.size(organizations)}">0</span>)</div>
+    <div class="card-body" style="padding: 0;">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Company</th>
+              <th>Industry</th>
+              <th>Website</th>
+              <th>Location</th>
+              <th>Active Roles</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="org : ${organizations}">
+              <td class="code-cell" th:text="'#' + ${org.id}">#1</td>
+              <td style="font-weight: 600;" th:text="${org.name}">Google</td>
+              <td th:text="${org.industry != null ? org.industry : '-'}">Tech</td>
+              <td>
+                <a th:if="${org.website}" th:href="${org.website}" target="_blank" class="code-cell" th:text="${org.website}">link</a>
+                <span th:unless="${org.website}">-</span>
+              </td>
+              <td th:text="${org.location != null ? org.location : '-'}">Bangalore</td>
+              <td class="code-cell" th:text="${#lists.size(org.internships)}">0</td>
+              <td>
+                <form th:action="@{'/organizations/' + ${org.id} + '/delete'}" method="POST" onsubmit="return confirm('Delete this organization? All linked internships will also be deleted.');" style="display:inline;">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(organizations)}">
+              <td colspan="7" class="empty-state">No organizations added yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

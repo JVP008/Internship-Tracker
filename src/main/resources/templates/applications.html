@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Applications & Status Tracker | Internship Tracker</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/navbar :: navbar('applications')}"></header>
+
+<main class="container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Applications & Status Tracker</h1>
+      <p class="page-subtitle">Track student applications, manage hiring stages, and record recruiter feedback</p>
+    </div>
+  </div>
+
+  <!-- Apply Form Card -->
+  <div class="card">
+    <div class="card-header">Submit New Internship Application</div>
+    <div class="card-body">
+      <form th:action="@{/applications}" method="POST">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="studentId">Student Candidate *</label>
+            <select name="studentId" id="studentId" required>
+              <option value="" disabled selected>-- Choose Student --</option>
+              <option th:each="s : ${students}" th:value="${s.id}" th:text="${s.name} + ' (' + ${s.email} + ')'">Jayesh</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="internshipId">Internship Opening *</label>
+            <select name="internshipId" id="internshipId" required>
+              <option value="" disabled selected>-- Choose Internship --</option>
+              <option th:each="i : ${internships}" th:value="${i.id}" th:text="${i.title} + ' @ ' + (${i.organization != null ? i.organization.name : 'Unknown'})">SWE</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label for="coverLetter">Statement of Purpose / Cover Letter</label>
+            <textarea name="coverLetter" id="coverLetter" placeholder="Brief note on why the student is a great fit..."></textarea>
+          </div>
+        </div>
+        <div style="margin-top: 10px;">
+          <button type="submit" class="btn btn-primary">&rarr; Submit Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Applications List Card -->
+  <div class="card">
+    <div class="card-header">All Applications (<span th:text="${#lists.size(applications)}">0</span>)</div>
+    <div class="card-body" style="padding: 0;">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>App ID</th>
+              <th>Student</th>
+              <th>Role & Org</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Update Status</th>
+              <th>Recruiter Feedback</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="app : ${applications}">
+              <td class="code-cell" th:text="'#' + ${app.id}">#1</td>
+              <td>
+                <strong th:text="${app.student != null ? app.student.name : '-'}">Jayesh</strong>
+                <div class="code-cell" style="color: #64748b;" th:text="${app.student != null ? app.student.email : ''}">jayesh@example.com</div>
+              </td>
+              <td>
+                <span th:text="${app.internship != null ? app.internship.title : '-'}">SWE</span>
+                <div style="font-size: 11px; color: #64748b;" th:text="${app.internship != null && app.internship.organization != null ? app.internship.organization.name : ''}">Google</div>
+              </td>
+              <td class="code-cell" th:text="${app.appliedDate}">2026-10-24</td>
+              <td>
+                <span class="pill"
+                      th:classappend="'pill-' + ${#strings.toLowerCase(app.status)}"
+                      th:text="${app.status}">APPLIED</span>
+              </td>
+              <!-- Inline Status Update Form -->
+              <td>
+                <form th:action="@{'/applications/' + ${app.id} + '/status'}" method="POST" style="display: flex; gap: 4px; align-items: center;">
+                  <select name="status" style="padding: 4px 6px; font-size: 11px; width: 110px;">
+                    <option th:each="st : ${statuses}"
+                            th:value="${st}"
+                            th:text="${st}"
+                            th:selected="${st == app.status}"></option>
+                  </select>
+                  <button type="submit" class="btn btn-outline" style="padding: 4px 8px; font-size: 11px;">Save</button>
+                </form>
+              </td>
+              <!-- Feedbacks list + Add feedback form -->
+              <td style="max-width: 250px;">
+                <div th:each="fb : ${app.feedbacks}" style="margin-bottom: 6px; padding: 4px 6px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 11px;">
+                  <strong th:text="'★ ' + ${fb.rating} + '/5: '"></strong>
+                  <span th:text="${fb.comments}">Good</span>
+                </div>
+
+                <details style="margin-top: 4px;">
+                  <summary style="font-size: 11px; color: var(--accent-teal); cursor: pointer; font-weight: 600;">+ Add Feedback</summary>
+                  <form th:action="@{'/applications/' + ${app.id} + '/feedback'}" method="POST" style="margin-top: 6px;">
+                    <input type="text" name="comments" placeholder="Comments..." required style="padding: 4px; font-size: 11px; margin-bottom: 4px;">
+                    <div style="display: flex; gap: 4px;">
+                      <select name="rating" style="padding: 4px; font-size: 11px; width: 80px;" required>
+                        <option value="5">5 ★</option>
+                        <option value="4" selected>4 ★</option>
+                        <option value="3">3 ★</option>
+                        <option value="2">2 ★</option>
+                        <option value="1">1 ★</option>
+                      </select>
+                      <button type="submit" class="btn btn-primary" style="padding: 4px 8px; font-size: 11px;">Add</button>
+                    </div>
+                  </form>
+                </details>
+              </td>
+              <td>
+                <form th:action="@{'/applications/' + ${app.id} + '/delete'}" method="POST" onsubmit="return confirm('Delete this application?');">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(applications)}">
+              <td colspan="8" class="empty-state">No applications submitted yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
