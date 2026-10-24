@@ -1,6 +1,6 @@
 # Internship Tracking System
 
-A full-stack web application designed to help students discover and apply for internship opportunities, while enabling organizations to manage listings, evaluate applicants, update application statuses, and provide constructive feedback.
+A full-stack web application that helps students apply for internships and enables organizations to post openings, review applicants, track application statuses, and provide feedback.
 
 ---
 
@@ -24,13 +24,13 @@ A full-stack web application designed to help students discover and apply for in
 
 ## Problem Statement
 
-Navigating internship recruitment often involves fragmented communication between applicants and recruiters. Students lack clear visibility into application statuses and feedback, while organizations face challenges managing applicant pipelines manually.
+Finding internships and tracking applications often becomes disorganized. Students lack clear visibility into whether their applications have been reviewed, while recruiters find it hard to manage applicant pools and share feedback.
 
-The **Internship Tracking System** streamlines this workflow by offering:
-- Centralized student, organization, and listing registries.
-- Transparent application state machine (`APPLIED` → `SHORTLISTED` → `SELECTED` / `REJECTED`).
-- Qualitative and quantitative feedback recording.
-- Dual access channels: interactive server-side rendered UI (Thymeleaf) and a complete RESTful API with validation.
+The **Internship Tracking System** solves this with:
+- **Centralized Data:** Manage students, companies, and internship listings in one place.
+- **Transparent Status Tracking:** Clear progression stages (`APPLIED` → `SHORTLISTED` → `SELECTED` / `REJECTED`).
+- **Structured Feedback:** Recruiters can submit ratings (1 to 5) and feedback notes for each application.
+- **Two Ways to Use:** An interactive web portal (Thymeleaf) and a full REST API with input validation.
 
 ---
 
@@ -39,14 +39,14 @@ The **Internship Tracking System** streamlines this workflow by offering:
 | Feature | Description |
 |---|---|
 | **Student Management** | Register and manage student profiles (name, email, phone, college, and branch). |
-| **Organization Management** | Register and maintain corporate profiles (name, industry, website, and location). |
-| **Internship Listings** | Create, view, update, and remove internship opportunities linked to organizations. |
-| **Application Pipeline** | Students apply for opportunities with custom cover letters and track dates. |
-| **Status Progression** | Update application states through `APPLIED`, `SHORTLISTED`, `SELECTED`, and `REJECTED`. |
-| **Review & Feedback** | Record ratings (1 to 5) and recruiter review comments per application. |
-| **Responsive Web Portal** | Clean server-rendered Thymeleaf user interface with real-time statistics dashboard. |
-| **REST API & Validation** | Full CRUD endpoints with Jakarta Bean Validation and centralized error handling. |
-| **PostgreSQL Integration** | Relational persistence with Spring Data JPA and Hibernate automated schema management. |
+| **Organization Management** | Add and manage company profiles (name, industry, website, and location). |
+| **Internship Listings** | Post, view, update, and remove internship opportunities for each company. |
+| **Application System** | Students can apply with a cover letter and track application submission dates. |
+| **Status Updates** | Track and update progress: `APPLIED`, `SHORTLISTED`, `SELECTED`, and `REJECTED`. |
+| **Reviews & Feedback** | Record recruiter ratings (1–5 stars) and review comments per application. |
+| **Web Dashboard** | Clean web interface with summary statistics and quick action forms. |
+| **REST API** | Full CRUD endpoints with validation and clear JSON error responses. |
+| **PostgreSQL Database** | Persistent relational storage using Spring Data JPA and Hibernate. |
 
 ---
 
@@ -54,14 +54,14 @@ The **Internship Tracking System** streamlines this workflow by offering:
 
 ```mermaid
 flowchart TD
-    A["Student browses internship opportunities"] --> B["Student submits application with cover letter"]
+    A["Student views available internships"] --> B["Student submits application with cover letter"]
     B --> C["Initial Status: APPLIED"]
-    C --> D["Organization reviews student application"]
-    D --> E{"Recruitment Decision"}
+    C --> D["Organization reviews application"]
+    D --> E{"Decision"}
     E -->|Shortlist| F["Status: SHORTLISTED"]
     E -->|Select| G["Status: SELECTED"]
     E -->|Reject| H["Status: REJECTED"]
-    F --> I["Feedback & Rating Recorded (1-5)"]
+    F --> I["Feedback & Rating Added (1 to 5)"]
     G --> I
     H --> I
 
@@ -83,14 +83,14 @@ flowchart TD
 ```mermaid
 flowchart TD
     subgraph Clients["Clients"]
-        A["Desktop / Mobile Browser"]
-        B["Postman / API Clients"]
+        A["Web Browser (User UI)"]
+        B["Postman / REST Clients"]
     end
 
     subgraph AppLayer["Spring Boot Application Layer"]
         C["Web Controller (Thymeleaf UI)"]
         D["REST Controllers (/api/*)"]
-        E["Service Layer & Business Logic"]
+        E["Service Layer (Business Logic)"]
         F["Spring Data JPA Repositories"]
     end
 
@@ -118,7 +118,7 @@ flowchart TD
 
 ## Database Schema (ER Diagram)
 
-The underlying schema models five relational entities with foreign keys and cascade delete rules:
+The database consists of five main entities linked by foreign keys:
 
 ```mermaid
 erDiagram
@@ -178,22 +178,22 @@ erDiagram
 
 | Status | Meaning |
 |---|---|
-| `APPLIED` | Default status when a student submits an application. |
-| `SHORTLISTED` | The student passed preliminary review and moved to interview/evaluation. |
-| `SELECTED` | The applicant has been offered the internship position. |
-| `REJECTED` | The application has been declined. |
+| `APPLIED` | The application has been submitted by the student. |
+| `SHORTLISTED` | The student passed initial screening and moved to the interview round. |
+| `SELECTED` | The student was offered the internship position. |
+| `REJECTED` | The application was not selected. |
 
 ---
 
 ## Technologies Used
 
-- **Backend:** Java 17, Spring Boot 3.x
-- **Persistence:** Spring Data JPA, Hibernate, PostgreSQL
-- **Web UI:** Thymeleaf, HTML5, CSS3
+- **Backend:** Java 17, Spring Boot 3
+- **Database & ORM:** PostgreSQL, Spring Data JPA, Hibernate
+- **Frontend / Views:** Thymeleaf, HTML5, CSS3
 - **Validation:** Jakarta Bean Validation (`hibernate-validator`)
-- **Build & Dependency Tool:** Maven (with Maven Wrapper `mvnw`)
-- **API Testing:** Postman (`postman/` collection workspace included)
-- **Documentation:** Markdown, Mermaid.js
+- **Build Tool:** Maven (Maven Wrapper included)
+- **API Testing:** Postman
+- **Diagrams:** Mermaid.js
 
 ---
 
@@ -202,47 +202,47 @@ erDiagram
 ```text
 internship-tracker/
 ├── .mvn/                                # Maven wrapper configuration
-├── .postman/                            # Postman workspace resources
-├── postman/                             # Postman collection & environment definitions
+├── .postman/                            # Postman workspace configuration
+├── postman/                             # Postman collection & environment files
 ├── src/
 │   ├── main/
 │   │   ├── java/com/internship/internship_tracker/
 │   │   │   ├── InternshipTrackerApplication.java
 │   │   │   ├── controller/
-│   │   │   │   ├── ApplicationController.java   # REST API for Applications
-│   │   │   │   ├── FeedbackController.java      # REST API for Feedback
-│   │   │   │   ├── InternshipController.java    # REST API for Internships
-│   │   │   │   ├── OrganizationController.java  # REST API for Organizations
-│   │   │   │   ├── StudentController.java       # REST API for Students
-│   │   │   │   └── WebController.java           # Thymeleaf Web UI routes
+│   │   │   │   ├── ApplicationController.java   # REST endpoints for applications
+│   │   │   │   ├── FeedbackController.java      # REST endpoints for reviews/feedback
+│   │   │   │   ├── InternshipController.java    # REST endpoints for internship listings
+│   │   │   │   ├── OrganizationController.java  # REST endpoints for companies
+│   │   │   │   ├── StudentController.java       # REST endpoints for students
+│   │   │   │   └── WebController.java           # Web UI view routes
 │   │   │   ├── dto/
 │   │   │   │   ├── ApplicationRequest.java
 │   │   │   │   └── StatusUpdateRequest.java
 │   │   │   ├── exception/
-│   │   │   │   ├── GlobalExceptionHandler.java  # Centralized REST error handling
+│   │   │   │   ├── GlobalExceptionHandler.java  # Centralized error handler
 │   │   │   │   └── ResourceNotFoundException.java
 │   │   │   ├── model/
 │   │   │   │   ├── Application.java
-│   │   │   │   ├── ApplicationStatus.java       # Enum: APPLIED, SHORTLISTED, SELECTED, REJECTED
+│   │   │   │   ├── ApplicationStatus.java       # APPLIED, SHORTLISTED, SELECTED, REJECTED
 │   │   │   │   ├── Feedback.java
 │   │   │   │   ├── Internship.java
 │   │   │   │   ├── Organization.java
 │   │   │   │   └── Student.java
-│   │   │   ├── repository/                      # Spring Data JPA Repositories
+│   │   │   ├── repository/                      # JPA Repository interfaces
 │   │   │   └── service/                         # Business logic services
 │   │   └── resources/
 │   │       ├── application.properties           # Database & server configuration
-│   │       ├── static/css/style.css             # UI styling
-│   │       └── templates/                       # Thymeleaf HTML views
+│   │       ├── static/css/style.css             # Custom styles
+│   │       └── templates/                       # Thymeleaf templates
 │   │           ├── applications.html
 │   │           ├── dashboard.html
 │   │           ├── internships.html
 │   │           ├── organizations.html
 │   │           ├── students.html
 │   │           └── fragments/navbar.html
-│   └── test/                                    # Unit and integration test cases
+│   └── test/                                    # Unit and integration tests
 ├── mvnw / mvnw.cmd                              # Maven wrapper scripts
-├── pom.xml                                      # Project dependencies & build config
+├── pom.xml                                      # Maven dependencies and build settings
 └── README.md
 ```
 
@@ -252,11 +252,10 @@ internship-tracker/
 
 ### 1. Prerequisites
 
-Ensure you have the following installed on your machine:
+Make sure you have installed:
 - **Java Development Kit (JDK) 17** or higher
 - **PostgreSQL 14+**
 - **Git**
-- **Maven** (optional, wrapper is included)
 
 ### 2. Clone the Repository
 
@@ -265,9 +264,9 @@ git clone https://github.com/JVP008/Internship-Tracker.git
 cd Internship-Tracker/internship-tracker
 ```
 
-### 3. Setup PostgreSQL Database
+### 3. Create the Database
 
-Access your PostgreSQL instance (via `psql` or pgAdmin) and create the database:
+Open PostgreSQL (using `psql` or pgAdmin) and create the database:
 
 ```sql
 CREATE DATABASE "Internship_Tracker";
@@ -275,12 +274,12 @@ CREATE DATABASE "Internship_Tracker";
 
 ### 4. Configure Application Properties
 
-Review and edit [application.properties](file:///src/main/resources/application.properties) with your database port and credentials:
+Open `src/main/resources/application.properties` and verify your PostgreSQL port and password:
 
 ```properties
 spring.application.name=internship-tracker
 
-# Default PostgreSQL port is 5432 (or your custom port, e.g. 1111)
+# Default port is 5432 (or your custom port like 1111)
 spring.datasource.url=jdbc:postgresql://localhost:5432/Internship_Tracker
 spring.datasource.username=postgres
 spring.datasource.password=YOUR_POSTGRES_PASSWORD
@@ -290,10 +289,7 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 ```
 
-> [!IMPORTANT]
-> Never commit confidential database passwords to public repositories.
-
-### 5. Build and Run the Application
+### 5. Run the Project
 
 **Windows (PowerShell / Command Prompt):**
 ```powershell
@@ -306,37 +302,36 @@ chmod +x ./mvnw
 ./mvnw spring-boot:run
 ```
 
-The application starts by default at `http://localhost:8080/`.
+Once started, open your browser at:
+[http://localhost:8080/](http://localhost:8080/)
 
 ---
 
 ## Web Portal Pages
 
-Access the interactive web application via your browser:
-
-| View | Route | Functionality |
+| Page | URL | What you can do |
 |---|---|---|
-| **Dashboard** | `GET /` | Key statistics cards (totals of students, orgs, internships, applications) and recent application stream. |
-| **Students** | `GET /students` | Student directory table, registration form (name, email, phone, college, branch), and delete action. |
-| **Organizations** | `GET /organizations` | Organization listings, company creation form (industry, website, location), and delete action. |
-| **Internships** | `GET /internships` | Internship catalog cards, create listing form linked to an organization, and delete action. |
-| **Applications** | `GET /applications` | Submit new application, live status badge updater (`APPLIED` → `SHORTLISTED` → `SELECTED` / `REJECTED`), feedback submission with ratings, and deletion. |
+| **Dashboard** | `/` | View total counts (students, companies, internships, applications) and recent applications. |
+| **Students** | `/students` | Browse registered students, add new students, and delete student records. |
+| **Organizations** | `/organizations` | View company list, add new organizations, and delete records. |
+| **Internships** | `/internships` | Browse posted internships, add new opportunities under an organization, and delete postings. |
+| **Applications** | `/applications` | Apply for internships, update application status (`APPLIED` → `SHORTLISTED` → `SELECTED` / `REJECTED`), add ratings and feedback, and delete applications. |
 
 ---
 
-## Complete REST API Reference
+## REST API Reference
 
-All REST endpoints accept and return `application/json` responses.
+All endpoints accept and return JSON payloads.
 
 ### 1. Students (`/api/students`)
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/students` | Get all registered students |
-| `GET` | `/api/students/{id}` | Get student details by ID |
+| `GET` | `/api/students` | Get all students |
+| `GET` | `/api/students/{id}` | Get student by ID |
 | `POST` | `/api/students` | Register a new student |
-| `PUT` | `/api/students/{id}` | Update existing student profile |
-| `DELETE` | `/api/students/{id}` | Delete student record |
+| `PUT` | `/api/students/{id}` | Update student details |
+| `DELETE` | `/api/students/{id}` | Delete a student |
 
 ### 2. Organizations (`/api/organizations`)
 
@@ -344,40 +339,40 @@ All REST endpoints accept and return `application/json` responses.
 |---|---|---|
 | `GET` | `/api/organizations` | Get all organizations |
 | `GET` | `/api/organizations/{id}` | Get organization by ID |
-| `POST` | `/api/organizations` | Register a new organization |
-| `PUT` | `/api/organizations/{id}` | Update organization profile |
-| `DELETE` | `/api/organizations/{id}` | Delete organization record |
+| `POST` | `/api/organizations` | Add a new organization |
+| `PUT` | `/api/organizations/{id}` | Update organization details |
+| `DELETE` | `/api/organizations/{id}` | Delete an organization |
 
 ### 3. Internships (`/api/internships`)
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/internships` | Get all posted internships |
-| `GET` | `/api/internships/{id}` | Get internship details by ID |
-| `POST` | `/api/internships?organizationId={id}` | Post internship under an organization |
+| `GET` | `/api/internships` | Get all internships |
+| `GET` | `/api/internships/{id}` | Get internship by ID |
+| `POST` | `/api/internships?organizationId={id}` | Post an internship under an organization |
 | `PUT` | `/api/internships/{id}` | Update internship details |
-| `DELETE` | `/api/internships/{id}` | Delete internship posting |
+| `DELETE` | `/api/internships/{id}` | Delete an internship |
 
 ### 4. Applications (`/api/applications`)
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/applications` | List all applications |
-| `GET` | `/api/applications/{id}` | Get application details by ID |
-| `GET` | `/api/applications/student/{studentId}` | Get all applications submitted by a student |
-| `GET` | `/api/applications/internship/{internshipId}` | Get all applications for a specific internship |
-| `POST` | `/api/applications` | Submit application (`studentId`, `internshipId`, `coverLetter`) |
+| `GET` | `/api/applications` | Get all applications |
+| `GET` | `/api/applications/{id}` | Get application by ID |
+| `GET` | `/api/applications/student/{studentId}` | Get applications submitted by a specific student |
+| `GET` | `/api/applications/internship/{internshipId}` | Get applications received for a specific internship |
+| `POST` | `/api/applications` | Apply for an internship (`studentId`, `internshipId`, `coverLetter`) |
 | `PATCH` | `/api/applications/{id}/status` | Update application status (`status`: `APPLIED`, `SHORTLISTED`, `SELECTED`, `REJECTED`) |
-| `DELETE` | `/api/applications/{id}` | Withdraw / delete application |
+| `DELETE` | `/api/applications/{id}` | Delete an application |
 
 ### 5. Feedbacks (`/api/feedbacks`)
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/feedbacks` | List all feedback entries |
+| `GET` | `/api/feedbacks` | Get all feedback entries |
 | `GET` | `/api/feedbacks/{id}` | Get feedback by ID |
-| `GET` | `/api/feedbacks/application/{applicationId}` | Get feedback entries for a specific application |
-| `POST` | `/api/feedbacks?applicationId={id}` | Submit review feedback (`comments`, `rating`: 1 to 5) |
+| `GET` | `/api/feedbacks/application/{applicationId}` | Get feedback for a specific application |
+| `POST` | `/api/feedbacks?applicationId={id}` | Add review feedback (`comments`, `rating`: 1 to 5) |
 | `DELETE` | `/api/feedbacks/{id}` | Delete feedback entry |
 
 ---
@@ -411,14 +406,14 @@ Content-Type: application/json
 }
 ```
 
-### Post Internship Opportunity
+### Post an Internship
 ```http
 POST /api/internships?organizationId=1
 Content-Type: application/json
 
 {
   "title": "Software Engineering Intern",
-  "description": "Work on distributed cloud backend services using Java & Spring Boot.",
+  "description": "Work on backend services using Java and Spring Boot.",
   "location": "Bangalore (Hybrid)",
   "stipend": 45000.0,
   "durationInWeeks": 12
@@ -437,7 +432,7 @@ Content-Type: application/json
 }
 ```
 
-### Update Application Status
+### Update Status
 ```http
 PATCH /api/applications/1/status
 Content-Type: application/json
@@ -447,13 +442,13 @@ Content-Type: application/json
 }
 ```
 
-### Record Application Feedback
+### Add Feedback
 ```http
 POST /api/feedbacks?applicationId=1
 Content-Type: application/json
 
 {
-  "comments": "Strong analytical problem-solving skills shown in technical interview.",
+  "comments": "Strong analytical problem-solving skills in the technical round.",
   "rating": 5
 }
 ```
@@ -462,9 +457,9 @@ Content-Type: application/json
 
 ## Error Handling & Validation
 
-Centralized error handling is managed via `GlobalExceptionHandler`:
+Common errors return clean, predictable JSON responses:
 
-- **Entity Not Found (`404 NOT FOUND`):**
+- **Resource Not Found (`404 NOT FOUND`):**
   ```json
   {
     "timestamp": "2026-10-24T21:00:00",
@@ -473,7 +468,7 @@ Centralized error handling is managed via `GlobalExceptionHandler`:
     "message": "Student not found with id: 99"
   }
   ```
-- **Validation Errors (`400 BAD REQUEST`):**
+- **Validation Error (`400 BAD REQUEST`):**
   ```json
   {
     "timestamp": "2026-10-24T21:00:00",
@@ -502,18 +497,18 @@ Run unit and integration tests using Maven:
 ./mvnw clean test
 ```
 
-### Postman Testing
-The repository includes a configured Postman workspace under [postman/](file:///postman) and [.postman/](file:///.postman). You can import the collection directly into Postman to test all endpoints.
+### Testing with Postman
+A configured Postman workspace is included under the [postman/](file:///postman) folder. You can import it directly into Postman to test all endpoints with predefined requests.
 
 ---
 
 ## Future Scope
 
-- Role-based access control (RBAC) and JWT authentication for Students and Recruiters.
-- Automated email alerts on status changes and interview invitations.
-- PDF resume upload and cloud storage integration (AWS S3 / Firebase Storage).
-- Search, filter, and pagination capabilities for listings.
-- Application deadline timers and automated expiration.
+- User authentication with role-based access (Student vs Recruiter) using Spring Security and JWT.
+- Email notifications when an application status changes.
+- Resume upload support (PDF format).
+- Search, filter, and pagination for internship listings.
+- Application deadlines and automatic expiration.
 
 ---
 
