@@ -54,7 +54,7 @@ flowchart TD
     E -->|Shortlist| F["SHORTLISTED"]
     E -->|Select| G["SELECTED"]
     E -->|Reject| H["REJECTED"]
-    F --> I["Feedback can be recorded"]
+    F --> I["Feedback recorded"]
     G --> I
     H --> I
 
@@ -360,5 +360,3 @@ This project was developed as part of Practical Batch H11, Group 55.
 | 23367 | Jayesh Patil |
 
 ---
-
-**Internship Tracking System — Simplifying internship applications and management.**
